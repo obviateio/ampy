@@ -193,7 +193,7 @@ class Pyboard:
             print(data)
             raise PyboardError('could not enter raw repl')
 
-        self.serial.write(b'\x04') # ctrl-D: soft reset
+        self.serial.write(b'\x04\x04') # ctrl-D: soft reset
         data = self.read_until(1, b'soft reboot\r\n')
         if not data.endswith(b'soft reboot\r\n'):
             print(data)
@@ -203,7 +203,7 @@ class Pyboard:
         # Modification from original pyboard.py below:
         #   Add a small delay and send Ctrl-C twice after soft reboot to ensure
         #   any main program loop in main.py is interrupted.
-        time.sleep(0.5)
+        time.sleep(1)
         self.serial.write(b'\x03\x03')
         # End modification above.
         data = self.read_until(1, b'raw REPL; CTRL-B to exit\r\n')
