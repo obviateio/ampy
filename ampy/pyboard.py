@@ -193,7 +193,7 @@ class Pyboard:
             print(data)
             raise PyboardError('could not enter raw repl')
 
-        self.serial.write(b'\x04\x04') # ctrl-D: soft reset
+        self.serial.write(b'\x04') # ctrl-D: soft reset
         data = self.read_until(1, b'soft reboot\r\n')
         if not data.endswith(b'soft reboot\r\n'):
             print(data)
@@ -210,9 +210,11 @@ class Pyboard:
         if not data.endswith(b'raw REPL; CTRL-B to exit\r\n'):
             print(data)
             raise PyboardError('could not enter raw repl')
+        
 
     def exit_raw_repl(self):
         self.serial.write(b'\r\x02') # ctrl-B: enter friendly REPL
+        self.serial.write(b'\x04') # ctrl-D: soft reset
 
     def follow(self, timeout, data_consumer=None):
         # wait for normal output
